@@ -6,13 +6,16 @@ node[:s3fs][:packages].each do |pkg|
   end
 end
 
+git "/tmp/s3fs" do
+  repository "https://github.com/s3fs-fuse/s3fs-fuse.git"
+  reference "master"
+  action :sync
+end
+
 bash "install_s3fs" do
-  not_if "which s3fs"
   user "root"
-  cwd "/tmp"
+  cwd "/tmp/s3fs"
   code <<-EOH
-    git clone https://github.com/s3fs-fuse/s3fs-fuse.git
-    cd s3fs-fuse
     ./autogen.sh
     ./configure --prefix=/usr --with-openssl # See (*1)
     make
