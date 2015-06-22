@@ -7,6 +7,7 @@ node[:s3fs][:packages].each do |pkg|
 end
 
 bash "install_s3fs" do
+  not_if "which s3fs"
   user "root"
   cwd "/tmp"
   code <<-EOH
