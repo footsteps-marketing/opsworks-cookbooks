@@ -10,3 +10,10 @@ template "/etc/passwd-s3fs" do
     :access_key_secret => node[:s3fs][:aws_access_key][:secret],
   })
 end
+
+template "/etc/ahbe.conf" do
+  source "ahbe.conf.erb"
+  mode "644"
+  owner "root"
+  group "root"
+end
