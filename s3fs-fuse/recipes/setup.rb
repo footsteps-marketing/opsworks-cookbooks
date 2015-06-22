@@ -13,6 +13,7 @@ git "/tmp/s3fs" do
 end
 
 bash "install_s3fs" do
+  not_if "which s3fs"
   user "root"
   cwd "/tmp/s3fs"
   code <<-EOH
