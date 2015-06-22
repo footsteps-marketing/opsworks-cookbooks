@@ -23,3 +23,5 @@ default[:s3fs][:packages] = packages
 # Configuration for access key
 default['s3fs']['aws_access_key']['id'] = false
 default['s3fs']['aws_access_key']['secret'] = false
+
+default['s3fs']['mounts'] = []
