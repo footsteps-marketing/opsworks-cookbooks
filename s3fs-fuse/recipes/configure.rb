@@ -3,7 +3,7 @@
 if node[:s3fs][:aws_access_key][:id] != false && node[:s3fs][:aws_access_key][:secret] != false
   template "/etc/passwd-s3fs" do
     source "passwd-s3fs.erb"
-    mode "644"
+    mode "600"
     owner "root"
     group "root"
     variables({
