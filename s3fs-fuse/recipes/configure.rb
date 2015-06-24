@@ -1,6 +1,5 @@
 # AWS OpsWorks Recipe to configure s3fs-fuse
 
-
 template "/etc/passwd-s3fs" do
   source "passwd-s3fs.erb"
   mode "600"
@@ -11,7 +10,6 @@ template "/etc/passwd-s3fs" do
     :access_key_secret => node[:s3fs][:aws_access_key][:secret],
   })
 end
-
 
 template "/etc/ahbe.conf" do
   source "ahbe.conf.erb"
