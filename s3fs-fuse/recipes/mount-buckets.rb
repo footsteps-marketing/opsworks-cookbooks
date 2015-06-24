@@ -1,8 +1,10 @@
 # AWS OpsWorks Recipe to configure s3fs-fuse
 
 node[:s3fs][:mounts].each do |bucket, directory|
-  user = node[:opsworks][:deploy_user][:user]
-  group = node[:opsworks][:deploy_user][:group]
+  #user = node[:opsworks][:deploy_user][:user]
+  user = 'deploy'
+  #group = node[:opsworks][:deploy_user][:group]
+  group = 'www-data'
   bash "mount_s3fs" do
     only_if "which s3fs"
     user "root"
@@ -12,4 +14,3 @@ node[:s3fs][:mounts].each do |bucket, directory|
     EOH
   end
 end
-
