@@ -5,9 +5,9 @@ node[:s3fs][:mounts].each do |bucket, directory|
     user "root"
     code <<-EOH
       service apache2 restart
-      lsof | grep #{directory} && kill $(lsof | grep #{directory} | awk -F ' ' '{print $2}' | sort -u)
+      lsof | grep "#{directory}" && kill $(lsof | grep "#{directory}" | awk -F ' ' '{print $2}' | sort -u)
       if grep "#{directory}" /etc/mtab &>/dev/null; then
-        umount #{directory}
+        umount "#{directory}"
       fi
     EOH
   end
