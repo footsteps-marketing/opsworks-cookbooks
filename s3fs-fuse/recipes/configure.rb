@@ -2,7 +2,7 @@
 
 template "/etc/passwd-s3fs" do
   source "passwd-s3fs.erb"
-  mode "600"
+  mode "0600"
   owner "root"
   group "root"
   variables({
@@ -13,7 +13,7 @@ end
 
 template "/etc/ahbe.conf" do
   source "ahbe.conf.erb"
-  mode "644"
+  mode "0644"
   owner "root"
   group "root"
 end
