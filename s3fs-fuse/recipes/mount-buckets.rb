@@ -6,7 +6,7 @@ node[:s3fs][:mounts].each do |bucket, directory|
     user "root"
     code <<-EOH
       mkdir --parents "#{directory}"
-      s3fs "#{bucket}" "#{directory}" -o use_cache=/tmp -o default_acl=public_read -o allow_other -o gid=33 -o uid=4000 -o ahbe_conf=/etc/ahbe.conf
+      s3fs "#{bucket}" "#{directory}" -o use_cache=/tmp -o default_acl=public_read -o allow_other -o gid=$(id -g #{node[:opsworks][:deploy_user][:group]}) -o uid=$(id -g #{node[:opsworks][:deploy_user][:user]}) -o ahbe_conf=/etc/ahbe.conf
     EOH
   end
 end
