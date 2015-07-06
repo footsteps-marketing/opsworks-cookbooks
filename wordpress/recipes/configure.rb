@@ -42,7 +42,7 @@ node[:deploy].each do |app_name, deploy|
         )
     end
 
-    template "#{{deploy[:deploy_to]}}/current/.htaccess" do
+    template "#{deploy[:deploy_to]}/current/.htaccess" do
         source ".htaccess.erb"
         mode 0644
         group deploy[:group]
