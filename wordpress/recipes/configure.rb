@@ -28,9 +28,9 @@ node[:deploy].each do |app_name, deploy|
         group deploy[:group]
 
         if platform?("ubuntu")
-          owner "deploy"
+            owner "deploy"
         elsif platform?("amazon")
-          owner "apache"
+            owner "apache"
         end
 
         variables(
