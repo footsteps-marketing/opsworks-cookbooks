@@ -52,6 +52,7 @@ define('WP_CACHE', true); // Added by W3 Total Cache
 define('COOKIE_DOMAIN', '');
 <% end -%>
 
+
 <% if node['wordpress']['wp_config']['force_secure_logins']==true -%>
 /**
  * Secure Logins
@@ -60,10 +61,55 @@ define('FORCE_SSL_LOGIN', true);
 define('FORCE_SSL_ADMIN', true);
 <% end -%>
 
+
+<% if node['wordpress']['wp_config']['sunrise']==true -%>
+/**
+ * Sunrise
+ */
+define( 'SUNRISE', 'on' );
+<% end -%>
+
+
+<% if node['wordpress']['wp_config']['debug']==true -%>
+/**
+ * Sunrise
+ */
+define( 'DEBUG', 'on' );
+<% end -%>
+
+
+<% if node['wordpress']['wp_config']['site_url']!=false -%>
+/**
+ * Hardcode Site URL
+ */
+define('WP_HOME',    '<%= node[:wordpress][:wp_config][:site_url]%>');
+define('WP_SITEURL', '<%= node[:wordpress][:wp_config][:site_url]%>');
+<% end -%>
+
+
+<% if node['wordpress']['wp_config']['multisite']['enabled']==true && node['wordpress']['wp_config']['multisite']['domain']!=false -%>
+define('WP_ALLOW_MULTISITE', true);
+define('MULTISITE', true);
+define('SUBDOMAIN_INSTALL', <%= node[:wordpress][:wp_config][:multisite][:subdomain_install] %>);
+define('DOMAIN_CURRENT_SITE', '<%= node[:wordpress][:wp_config][:multisite][:domain_current_site] %>');
+define('PATH_CURRENT_SITE', '/');
+define('SITE_ID_CURRENT_SITE', <%= node[:wordpress][:wp_config][:multisite][:default_site] %>);
+define('BLOG_ID_CURRENT_SITE', <%= node[:wordpress][:wp_config][:multisite][:default_site] %>);
+<% end -%>
+
+
+<% if node['wordpress']['wp_config']['fsm_google_public_api_key']!=false -%>
+/**
+ * FSM Google API Settings
+ **/
+define('FSM_GOOGLE_PUBLIC_API_KEY', '<%= node['wordpress']['wp_config']['fsm_google_public_api_key'] =>');
+<% end -%>
+
+
 /**
  * Use external cron
  */
-define('DISABLE_WP_CRON', true);
+//define('DISABLE_WP_CRON', true);
 
 /**
  * WordPress Database Table prefix.
