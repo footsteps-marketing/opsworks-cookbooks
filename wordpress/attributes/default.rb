@@ -20,6 +20,8 @@ default['wordpress']['wp_config']['multisite']['subdomain_install'] = false
 default['wordpress']['wp_config']['multisite']['domain_current_site'] = false
 default['wordpress']['wp_config']['multisite']['default_site'] = 1
 
+default['wordpress']['wp_config']['salt'] = false
+
 default['wordpress']['wordfence'] = false
 
 default['wordpress']['max_upload_size'] = '32M'
