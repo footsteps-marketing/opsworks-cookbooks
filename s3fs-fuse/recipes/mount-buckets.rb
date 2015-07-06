@@ -11,7 +11,7 @@ node[:s3fs][:mounts].each do |bucket, directory|
     code <<-EOH
       mkdir --parents "#{directory}"
       unlink "#{directory}"/* || true
-      s3fs "#{bucket}" "#{directory}" -o use_cache=/tmp -o default_acl=public_read -o allow_other -o gid=$(id -g #{group}) -o uid=$(id -g #{user}) -o ahbe_conf=/etc/ahbe.conf
+      s3fs "#{bucket}" "#{directory}" -o use_cache=/tmp -o default_acl=public_read -o allow_other -o gid=$(id -g #{group}) -o uid=$(id -u #{user}) -o ahbe_conf=/etc/ahbe.conf
     EOH
   end
 end
