@@ -2,7 +2,7 @@
 
 node[:s3fs][:mounts].each do |bucket, directory|
   #user = node[:opsworks][:deploy_user][:user]
-  user = 'deploy'
+  user = 'www-data'
   #group = node[:opsworks][:deploy_user][:group]
   group = 'www-data'
   bash "mount_s3fs" do
