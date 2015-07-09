@@ -22,7 +22,7 @@ end
 # Create the Wordpress config file wp-config.php with corresponding values
 node[:deploy].each do |app_name, deploy|
 
-    directory "#{deploy[:deploy_to]}" do
+    directory "#{deploy[:deploy_to]}/current/wp-content/uploads" do
         if platform?("ubuntu")
             owner "deploy"
         elsif platform?("amazon")
