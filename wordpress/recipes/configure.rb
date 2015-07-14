@@ -33,6 +33,17 @@ node[:deploy].each do |app_name, deploy|
         action :create
     end
 
+    directory "#{deploy[:deploy_to]}/current/wp-content/wfcache" do
+        if platform?("ubuntu")
+            owner "deploy"
+        elsif platform?("amazon")
+            owner "apache"
+        end
+        group deploy[:group]
+        mode '2775'
+        action :create
+    end
+
     template "#{deploy[:deploy_to]}/current/wp-config.php" do
         source "wp-config.php.erb"
         mode 0660
