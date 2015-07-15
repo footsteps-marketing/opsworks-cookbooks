@@ -27,8 +27,8 @@ node[:deploy].each do |app_name, deploy|
         user "root"
         cwd "#{deploy[:deploy_to]}/current/"
         code <<-EOH
-            find . -type d -exec chmod 2775
-            find . -type f -exec chmod 0664
+            find . -type d -exec chmod 2775 {} + || true
+            find . -type f -exec chmod 0664 {} + || true
         EOH
     end
 
