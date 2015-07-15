@@ -22,27 +22,37 @@ end
 # Create the Wordpress config file wp-config.php with corresponding values
 node[:deploy].each do |app_name, deploy|
 
-    directory "#{deploy[:deploy_to]}/current/wp-content/uploads" do
-        if platform?("ubuntu")
-            owner "deploy"
-        elsif platform?("amazon")
-            owner "apache"
-        end
-        group deploy[:group]
-        mode '2775'
-        action :create
+    script "permissions_set" do
+        interpreter "bash"
+        user "root"
+        cwd "#{deploy[:deploy_to]}/current/"
+        code <<-EOH
+            find . -type d -exec chmod 2775
+            find . -type f -exec chmod 0664
+        EOH
     end
 
-    directory "#{deploy[:deploy_to]}/current/wp-content/wfcache" do
-        if platform?("ubuntu")
-            owner "deploy"
-        elsif platform?("amazon")
-            owner "apache"
-        end
-        group deploy[:group]
-        mode '2775'
-        action :create
-    end
+#    directory "#{deploy[:deploy_to]}/current/wp-content/uploads" do
+#        if platform?("ubuntu")
+#            owner "deploy"
+#        elsif platform?("amazon")
+#            owner "apache"
+#        end
+#        group deploy[:group]
+#        mode '2775'
+#        action :create
+#    end
+#
+#    directory "#{deploy[:deploy_to]}/current/wp-content/wfcache" do
+#        if platform?("ubuntu")
+#            owner "deploy"
+#        elsif platform?("amazon")
+#            owner "apache"
+#        end
+#        group deploy[:group]
+#        mode '2775'
+#        action :create
+#    end
 
     template "#{deploy[:deploy_to]}/current/wp-config.php" do
         source "wp-config.php.erb"
@@ -66,7 +76,7 @@ node[:deploy].each do |app_name, deploy|
 
     template "#{deploy[:deploy_to]}/current/.htaccess" do
         source ".htaccess.erb"
-        mode 0644
+        mode 0664
         group deploy[:group]
 
         if platform?("ubuntu")
