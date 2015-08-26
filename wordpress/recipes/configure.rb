@@ -19,6 +19,21 @@ else
     keys = node['wordpress']['wp_config']['salt']
 end
 
+case node[:platform_family]
+when 'debian'
+    package 'php5-mcrypt' do
+        action :install
+    end
+    script "memory_swap" do
+        interpreter "bash"
+        user "root"
+        code <<-EOH
+            php5enmod mcrypt
+            service apache2 restart
+        EOH
+    end
+end
+
 # Create the Wordpress config file wp-config.php with corresponding values
 node[:deploy].each do |app_name, deploy|
 
@@ -31,28 +46,6 @@ node[:deploy].each do |app_name, deploy|
             find . -type f -exec chmod 0664 {} + || true
         EOH
     end
-
-#    directory "#{deploy[:deploy_to]}/current/wp-content/uploads" do
-#        if platform?("ubuntu")
-#            owner "deploy"
-#        elsif platform?("amazon")
-#            owner "apache"
-#        end
-#        group deploy[:group]
-#        mode '2775'
-#        action :create
-#    end
-#
-#    directory "#{deploy[:deploy_to]}/current/wp-content/wfcache" do
-#        if platform?("ubuntu")
-#            owner "deploy"
-#        elsif platform?("amazon")
-#            owner "apache"
-#        end
-#        group deploy[:group]
-#        mode '2775'
-#        action :create
-#    end
 
     template "#{deploy[:deploy_to]}/current/wp-config.php" do
         source "wp-config.php.erb"
