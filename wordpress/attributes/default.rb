@@ -38,3 +38,8 @@ default['wordpress']['wordfence'] = false
 
 default['wordpress']['max_upload_size'] = '32M'
 default['wordpress']['max_execution_time'] = '180'
+
+default['wordpress']['exclude_plugins'] = []
+default['wordpress']['exclude_themes'] = []
+
+default['wordpress']['wp_config']['multisite']['default_site'] = 1
