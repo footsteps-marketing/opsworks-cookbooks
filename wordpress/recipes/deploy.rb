@@ -9,6 +9,7 @@ node[:deploy].each do |app_name, deploy|
     exclude_plugins.each do |plugin|
         Chef::Log.debug("Deleting #{deploy[:deploy_to]}/current/wp-content/plugins/#{plugin}")
         directory "#{deploy[:deploy_to]}/current/wp-content/plugins/#{plugin}" do
+            recursive true
             action :delete
         end
     end
@@ -16,6 +17,7 @@ node[:deploy].each do |app_name, deploy|
     exclude_themes.each do |theme|
         Chef::Log.debug("#{deploy[:deploy_to]}/current/wp-content/themes/#{theme}")
         directory "#{deploy[:deploy_to]}/current/wp-content/themes/#{theme}" do
+            recursive true
             action :delete
         end
     end
