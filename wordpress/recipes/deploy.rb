@@ -21,4 +21,9 @@ node[:deploy].each do |app_name, deploy|
             action :delete
         end
     end
+
+    directory "#{deploy[:deploy_to]}/current/wp-content/plugins/bwp-minify/cache" do
+        recursive true
+        action :create
+    end
 end
