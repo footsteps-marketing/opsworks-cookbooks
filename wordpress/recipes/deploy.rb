@@ -24,6 +24,9 @@ node[:deploy].each do |app_name, deploy|
 
     directory "#{deploy[:deploy_to]}/current/wp-content/plugins/bwp-minify/cache" do
         recursive true
+        owner 'deploy'
+        group 'www-data'
+        mode '0775'
         action :create
     end
 end
