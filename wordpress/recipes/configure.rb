@@ -101,18 +101,16 @@ node[:deploy].each do |app_name, deploy|
         owner "root"
     end
 
-    ruby_block "something" do
+    ruby_block "check_curl_command_output" do
         block do
             #tricky way to load this Chef::Mixin::ShellOut utilities
-            Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
-            command = "php #{deploy[:deploy_to]}/current/get-mapped-domains.php"
+            Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+            command = 'php ' + deploy[:deploy_to] + '/current/get-mapped-domains.php'
             command_out = shell_out(command)
-            node[:wp_mapped_domains] = command_out.stdout
+            node[:wp_mapped_domains] = command.stdout.split("\n")
         end
         action :create
     end
-
-    node[:wp_mapped_domains] = node[:wp_mapped_domains].split("\n")
 
     node[:wp_mapped_domains].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
