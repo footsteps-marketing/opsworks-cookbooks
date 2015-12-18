@@ -101,18 +101,10 @@ node[:deploy].each do |app_name, deploy|
         owner "root"
     end
 
-    ruby_block "check_curl_command_output" do
-        block do
-            #tricky way to load this Chef::Mixin::ShellOut utilities
-            Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
-            command = 'php ' + deploy[:deploy_to] + '/current/get-mapped-domains.php'
-            command_out = shell_out(command)
-            node[:wp_mapped_domains] = command.stdout.split("\n")
-        end
-        action :create
-    end
+    command_output = `php #{deploy[:deploy_to]}/current/get-mapped-domains.php`
+    wp_mapped_domains = command_output.split("\n")
 
-    node[:wp_mapped_domains].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
+    wp_mapped_domains.unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
     script "letsencrypt_doer" do
         interpreter "bash"
@@ -127,7 +119,7 @@ node[:deploy].each do |app_name, deploy|
         EOH
     end
 
-    node[:wp_mapped_domains].each do |mapped_domain|
+    wp_mapped_domains.each do |mapped_domain|
         
         template "#{node[:apache][:dir]}/sites-enabled/#{mapped_domain}.conf" do
             source 'mapped_domain.conf.erb'
