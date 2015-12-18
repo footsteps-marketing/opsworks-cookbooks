@@ -98,13 +98,25 @@ node[:deploy].each do |app_name, deploy|
     template "#{deploy[:deploy_to]}/current/get-mapped-domains.php" do
         source "get-mapped-domains.php.erb"
         mode 0700
+        group "root"
         owner "root"
     end
 
-    command_output = `php #{deploy[:deploy_to]}/current/get-mapped-domains.php`
-    wp_mapped_domains = command_output.split("\n")
 
-    wp_mapped_domains.unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
+
+
+    ruby_block "check_curl_command_output" do
+        block do
+            #tricky way to load this Chef::Mixin::ShellOut utilities
+            Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
+            command = "php #{deploy[:deploy_to]}/current/get-mapped-domains.php"
+            command_out = shell_out(command)
+            node[:wp_mapped_domains] = command.stdout.split("\n")
+        end
+        action :create
+    end
+
+    node[:wp_mapped_domains].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
     script "letsencrypt_doer" do
         interpreter "bash"
@@ -119,7 +131,7 @@ node[:deploy].each do |app_name, deploy|
         EOH
     end
 
-    wp_mapped_domains.each do |mapped_domain|
+    node[:wp_mapped_domains].each do |mapped_domain|
         
         template "#{node[:apache][:dir]}/sites-enabled/#{mapped_domain}.conf" do
             source 'mapped_domain.conf.erb'
