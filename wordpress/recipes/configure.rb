@@ -80,6 +80,14 @@ node[:deploy].each do |app_name, deploy|
 
     end
 
+    template "#{deploy[:deploy_to]}/current/get-mapped-domains.php" do
+        source "get-mapped-domains.php.erb"
+        mode 0700
+        group "root"
+        owner "root"
+    end
+=begin
+
     git "#{deploy[:deploy_to]}/letsencrypt" do
         user 'root'
         repository 'git@github.com:letsencrypt/letsencrypt.git'
@@ -94,16 +102,6 @@ node[:deploy].each do |app_name, deploy|
             ./letsencrypt-auto --help
         EOH
     end
-
-    template "#{deploy[:deploy_to]}/current/get-mapped-domains.php" do
-        source "get-mapped-domains.php.erb"
-        mode 0700
-        group "root"
-        owner "root"
-    end
-
-
-
 
     ruby_block "check_curl_command_output" do
         block do
@@ -150,6 +148,8 @@ node[:deploy].each do |app_name, deploy|
             service apache2 restart
         EOH
     end
+=end
+
 
 	# Import Wordpress database backup from file if it exists
 	mysql_command = "/usr/bin/mysql -h #{deploy[:database][:host]} -u #{deploy[:database][:username]} #{node[:mysql][:server_root_password].blank? ? '' : "-p#{node[:mysql][:server_root_password]}"} #{deploy[:database][:database]}"
