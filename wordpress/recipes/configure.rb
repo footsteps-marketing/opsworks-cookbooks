@@ -107,14 +107,14 @@ node[:deploy].each do |app_name, deploy|
             Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)      
             command = "php #{deploy[:deploy_to]}/current/get-mapped-domains.php"
             command_out = shell_out(command)
-            node.set['wp_mapped_domains'] = command_out.stdout
+            node[:wp_mapped_domains] = command_out.stdout
         end
         action :create
     end
 
-    node['wp_mapped_domains'] = node['wp_mapped_domains'].split("\n")
+    node[:wp_mapped_domains] = node[:wp_mapped_domains].split("\n")
 
-    node['wp_mapped_domains'].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
+    node[:wp_mapped_domains].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
     script "letsencrypt_doer" do
         interpreter "bash"
