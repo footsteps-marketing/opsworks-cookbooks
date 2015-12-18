@@ -80,6 +80,22 @@ node[:deploy].each do |app_name, deploy|
 
     end
 
+    git "#{deploy[:deploy_to]}/letsencrypt" do
+        user 'root'
+        repository 'git@github.com:letsencrypt/letsencrypt.git'
+        action :sync
+    end
+
+    script "letsencrypt_init" do
+        interpreter "bash"
+        user "root"
+        cwd "#{deploy[:deploy_to]}/letsencrypt"
+        code <<-EOH
+            ./letsencrypt-auto --help
+        EOH
+    end
+
+
 
 	# Import Wordpress database backup from file if it exists
 	mysql_command = "/usr/bin/mysql -h #{deploy[:database][:host]} -u #{deploy[:database][:username]} #{node[:mysql][:server_root_password].blank? ? '' : "-p#{node[:mysql][:server_root_password]}"} #{deploy[:database][:database]}"
