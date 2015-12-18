@@ -112,7 +112,9 @@ node[:deploy].each do |app_name, deploy|
         action :create
     end
 
-    node[:wp_mapped_domains].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
+    node['wp_mapped_domains'] = node['wp_mapped_domains'].split("\n")
+
+    node['wp_mapped_domains'].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
     script "letsencrypt_doer" do
         interpreter "bash"
