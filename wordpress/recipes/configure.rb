@@ -92,8 +92,6 @@ node[:deploy].each do |app_name, deploy|
         repository "https://github.com/letsencrypt/letsencrypt.git"
         action :sync
     end
-    
-=begin
 
     script "letsencrypt_init" do
         interpreter "bash"
@@ -103,6 +101,8 @@ node[:deploy].each do |app_name, deploy|
             ./letsencrypt-auto --help
         EOH
     end
+    
+=begin
 
     ruby_block "check_curl_command_output" do
         block do
