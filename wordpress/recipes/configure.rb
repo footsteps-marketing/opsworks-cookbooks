@@ -97,7 +97,7 @@ node[:deploy].each do |app_name, deploy|
         interpreter "bash"
         user "root"
         cwd "#{deploy[:deploy_to]}/letsencrypt"
-        code "./letsencrypt-auto --help 2&1 >> ../letsencrypt-output.log"
+        code "screen ./letsencrypt-auto --help 2&1 >> ../letsencrypt-output.log"
     end
     
 =begin
