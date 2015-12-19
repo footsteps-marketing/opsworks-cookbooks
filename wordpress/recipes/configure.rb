@@ -98,7 +98,7 @@ node[:deploy].each do |app_name, deploy|
         user "root"
         cwd "#{deploy[:deploy_to]}/letsencrypt"
         code <<-EOH
-            ./letsencrypt-auto --help
+            ./letsencrypt-auto --help 2&1 >> ../letsencrypt-output.log
         EOH
     end
     
