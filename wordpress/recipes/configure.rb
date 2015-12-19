@@ -88,8 +88,8 @@ node[:deploy].each do |app_name, deploy|
     end
 
     git "#{deploy[:deploy_to]}/letsencrypt" do
-        user 'root'
-        repository 'git@github.com:letsencrypt/letsencrypt.git'
+        user "root"
+        repository "https://github.com/letsencrypt/letsencrypt.git"
         action :sync
     end
     
