@@ -87,13 +87,14 @@ node[:deploy].each do |app_name, deploy|
         owner "root"
     end
 
+=begin
+
     git "#{deploy[:deploy_to]}/letsencrypt" do
         user "root"
         repository "https://github.com/letsencrypt/letsencrypt.git"
         action :sync
     end
 
-=begin
 
     script "letsencrypt_init" do
         interpreter "bash"
@@ -102,7 +103,6 @@ node[:deploy].each do |app_name, deploy|
         code "screen ./letsencrypt-auto --help 2&1 >> ../letsencrypt-output.log"
     end
     
-
     ruby_block "check_curl_command_output" do
         block do
             #tricky way to load this Chef::Mixin::ShellOut utilities
