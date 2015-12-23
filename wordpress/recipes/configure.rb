@@ -93,6 +93,8 @@ node[:deploy].each do |app_name, deploy|
         action :sync
     end
 
+=begin
+
     script "letsencrypt_init" do
         interpreter "bash"
         user "root"
@@ -100,7 +102,6 @@ node[:deploy].each do |app_name, deploy|
         code "screen ./letsencrypt-auto --help 2&1 >> ../letsencrypt-output.log"
     end
     
-=begin
 
     ruby_block "check_curl_command_output" do
         block do
