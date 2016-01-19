@@ -1,5 +1,7 @@
 node[:deploy].each do |app_name, deploy|
 
+    abort(app_name);
+
     if (app_name == 'osTicket')
         template "#{deploy[:deploy_to]}/include/ost-config.php" do
             source "ost-config.php.erb"
