@@ -16,8 +16,8 @@ node[:deploy].each do |app_name, deploy|
                 :user         => (deploy[:database][:username] rescue nil),
                 :password     => (deploy[:database][:password] rescue nil),
                 :host         => (deploy[:database][:host] rescue nil),
-                :secret_salt  => (deploy[:osticket][:secret_salt] rescue nil),
-                :admin_email  => (deploy[:osticket][:admin_email] rescue nil)
+                :secret_salt  => (node[:osticket][:secret_salt] rescue nil),
+                :admin_email  => (node[:osticket][:admin_email] rescue nil)
             )
         end
     end    
