@@ -1,8 +1,5 @@
 node[:deploy].each do |app_name, deploy|
-
-    abort(app_name);
-
-    if (app_name == 'osTicket')
+    if app_name == 'osticket' then
         template "#{deploy[:deploy_to]}/include/ost-config.php" do
             source "ost-config.php.erb"
             mode 0660
@@ -23,6 +20,5 @@ node[:deploy].each do |app_name, deploy|
                 :admin_email  => (deploy[:osticket][:admin_email] rescue nil)
             )
         end
-    end
-    
+    end    
 end
