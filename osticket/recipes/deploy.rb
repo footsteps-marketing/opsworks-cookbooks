@@ -1,6 +1,6 @@
 node[:deploy].each do |app_name, deploy|
     if app_name == 'osticket' then
-        template "#{deploy[:deploy_to]}/include/ost-config.php" do
+        template "#{deploy[:deploy_to]}/current/include/ost-config.php" do
             source "ost-config.php.erb"
             mode 0660
             group deploy[:group]
