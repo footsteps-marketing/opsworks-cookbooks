@@ -24,12 +24,35 @@ when 'debian'
     package 'php5-mcrypt' do
         action :install
     end
+    package 'pngquant' do
+        action :install
+    end
+    package 'jpegoptim' do
+        action :install
+    end
+    package 'imagemagick' do
+        action :install
+    end
     script "memory_swap" do
         interpreter "bash"
         user "root"
         code <<-EOH
             php5enmod mcrypt
             service apache2 restart
+        EOH
+    end
+    script "install_jpegarchive" do
+        interpreter "bash"
+        cwd "/tmp"
+        user "root"
+        code <<-EOH
+            sudo apt-get install build-essential autoconf pkg-config nasm libtool
+            git clone https://github.com/mozilla/mozjpeg.git
+            cd mozjpeg
+            autoreconf -fiv
+            ./configure --with-jpeg8
+            make
+            sudo make install
         EOH
     end
 end
