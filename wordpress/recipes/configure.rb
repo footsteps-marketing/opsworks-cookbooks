@@ -41,20 +41,38 @@ when 'debian'
             service apache2 restart
         EOH
     end
+    
+    script "install_mozjpeg" do
+        interpreter "bash"
+        cwd "/tmp"
+        user "root"
+        code <<-EOH
+            if [ ! -f /opt/mozjpeg/bin/cjpeg ]; then
+                sudo apt-get install -y build-essential autoconf pkg-config nasm libtool
+                git clone https://github.com/mozilla/mozjpeg.git
+                cd mozjpeg
+                autoreconf -fiv
+                ./configure --with-jpeg8
+                make
+                sudo make install
+            fi
+        EOH
+    end
+
     script "install_jpegarchive" do
         interpreter "bash"
         cwd "/tmp"
         user "root"
         code <<-EOH
-            sudo apt-get install build-essential autoconf pkg-config nasm libtool
-            git clone https://github.com/mozilla/mozjpeg.git
-            cd mozjpeg
-            autoreconf -fiv
-            ./configure --with-jpeg8
-            make
-            sudo make install
+            if [ ! -f /usr/local/bin/jpeg-recompress ]; then
+                git clone https://github.com/danielgtaylor/jpeg-archive.git
+                cd jpeg-archive
+                make
+                sudo make install
+            fi
         EOH
     end
+
 end
 
 # Create the Wordpress config file wp-config.php with corresponding values
