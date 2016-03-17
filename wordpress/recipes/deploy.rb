@@ -33,6 +33,7 @@ node[:deploy].each do |app_name, deploy|
 
     next if !node[:wordpress][:letsencrypt][:get_certificates]
 
+    domains_to_map = Array.new
     
     ruby_block "check_curl_command_output" do
         block do
@@ -40,12 +41,12 @@ node[:deploy].each do |app_name, deploy|
             Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
             command = "php #{deploy[:deploy_to]}/current/get-mapped-domains.php"
             command_out = shell_out(command)
-            node[:wp_mapped_domains] = command.stdout.split("\n")
+            domains_to_map = command.stdout.split("\n")
         end
         action :create
     end
 
-    node[:wp_mapped_domains].unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
+    domains_to_map.unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
     script "letsencrypt_doer" do
         interpreter "bash"
@@ -60,7 +61,7 @@ node[:deploy].each do |app_name, deploy|
         EOH
     end
 
-    node[:wp_mapped_domains].each do |mapped_domain|
+    domains_to_map.each do |mapped_domain|
         
         template "#{node[:apache][:dir]}/sites-enabled/#{mapped_domain}.conf" do
             source 'mapped_domain.conf.erb'
