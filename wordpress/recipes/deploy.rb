@@ -41,7 +41,7 @@ node[:deploy].each do |app_name, deploy|
             Chef::Resource::RubyBlock.send(:include, Chef::Mixin::ShellOut)
             command = "php #{deploy[:deploy_to]}/current/get-mapped-domains.php"
             command_out = shell_out(command)
-            domains_to_map = command.stdout.split("\n")
+            domains_to_map = command_out.stdout.split("\n")
         end
         action :create
     end
@@ -57,7 +57,7 @@ node[:deploy].each do |app_name, deploy|
             for domain in $(php #{deploy[:deploy_to]}/current/get-mapped-domains.php); do
                 DOMAINS="${DOMAINS} -d ${domain}"
             done
-            ./letsencrypt-auto certonly --webroot --keep --agree-tos -m "#{node[:wordpress][:letsencrypt][:admin_email]}" -w "#{deploy[:deploy_to]}/current" $DOMAINS 2&>1 >> /opt/letsencrypt.output.log
+            ./letsencrypt-auto certonly --staging --webroot --keep --agree-tos -m "#{node[:wordpress][:letsencrypt][:admin_email]}" -w "#{deploy[:deploy_to]}/current" $DOMAINS 2&>1 >> /opt/letsencrypt.output.log
         EOH
     end
 
