@@ -43,3 +43,6 @@ default['wordpress']['exclude_plugins'] = []
 default['wordpress']['exclude_themes'] = []
 
 default['wordpress']['wp_config']['multisite']['default_site'] = 1
+
+default['wordpress']['letsencrypt']['get_certificates'] = false
+default['wordpress']['letsencrypt']['admin_email'] = ''
