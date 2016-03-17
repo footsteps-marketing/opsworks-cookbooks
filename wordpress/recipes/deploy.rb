@@ -57,7 +57,7 @@ node[:deploy].each do |app_name, deploy|
             for domain in $(php #{deploy[:deploy_to]}/current/get-mapped-domains.php); do
                 DOMAINS="${DOMAINS} -d ${domain}"
             done
-            ./letsencrypt-auto certonly --webroot --text --keep-until-expiring --agree-tos --email "#{node[:wordpress][:letsencrypt][:admin_email]}" --webroot-path "#{deploy[:deploy_to]}/current" $DOMAINS
+            /opt/letsencrypt/letsencrypt-auto certonly --webroot --text --keep-until-expiring --agree-tos --email "#{node[:wordpress][:letsencrypt][:admin_email]}" --webroot-path "#{deploy[:deploy_to]}/current" $DOMAINS
         EOH
     end
 
