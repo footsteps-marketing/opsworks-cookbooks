@@ -50,7 +50,7 @@
   <% end -%>
 </VirtualHost>
 
-<% if node[:deploy][@application_name][:ssl_support] -%>
+<% if node[:wordpress][:letsencrypt][:get_certificates] -%>
 <VirtualHost *:443>
   ServerName <% @mapped_domain %>
   DocumentRoot <%= @params[:docroot] %>
