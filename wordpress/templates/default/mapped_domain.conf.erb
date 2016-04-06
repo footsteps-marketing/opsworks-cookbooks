@@ -1,8 +1,8 @@
 <VirtualHost *:80>
   ServerName <%= @mapped_domain %>
-  DocumentRoot <%= @params[:docroot] %>
+  DocumentRoot <%= @deploy_to %>
 
-  <Directory <%= @params[:docroot] %>>
+  <Directory <%= @deploy_to %>>
     Options FollowSymLinks
     AllowOverride All
     Order allow,deny
@@ -20,9 +20,9 @@
   </Directory>
 
   LogLevel <%= node[:apache][:log_level] %>
-  ErrorLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-error.log
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-access.log combined
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-ganglia.log ganglia
+  ErrorLog <%= node[:apache][:log_dir] %>/<%= @app_name %>-error.log
+  CustomLog <%= node[:apache][:log_dir] %>/<%= @app_name %>-access.log combined
+  CustomLog <%= node[:apache][:log_dir] %>/<%= @app_name %>-ganglia.log ganglia
 
   FileETag none
 
@@ -39,10 +39,6 @@
   SetEnv "<%= key %>" "<%= value %>"
   <% end %>
 
-  <% if @params[:mounted_at] -%>
-  AliasMatch ^<%= @params[:mounted_at] %>/(.*)$ <%= @params[:docroot] %>$1
-  <% end -%>
-
   <% if node[:apache][:version] == '2.2' -%>
   Include <%= @params[:local_config] %>*
   <% else -%>
@@ -53,17 +49,17 @@
 <% if node[:wordpress][:letsencrypt][:get_certificates] -%>
 <VirtualHost *:443>
   ServerName <%= @mapped_domain %>
-  DocumentRoot <%= @params[:docroot] %>
+  DocumentRoot <%= @deploy_to %>
 
   SSLEngine on
   SSLProxyEngine on
-  SSLCertificateFile /etc/letsencrypt/live/<% @mapped_domain %>/cert.pem
-  SSLCertificateChainFile /etc/letsencrypt/live/<% @mapped_domain %>/chain.pem
-  SSLCertificateKeyFile /etc/letsencrypt/live/<% @mapped_domain %>/privkey.pem
+  SSLCertificateFile /etc/letsencrypt/live/<%= @mapped_domain %>/cert.pem
+  SSLCertificateChainFile /etc/letsencrypt/live/<%= @mapped_domain %>/chain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/<%= @mapped_domain %>/privkey.pem
 
   SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
 
-  <Directory <%= @params[:docroot] %>>
+  <Directory <%= @deploy_to %>>
     Options FollowSymLinks
     AllowOverride All
     Order allow,deny
@@ -81,9 +77,9 @@
   </Directory>
 
   LogLevel <%= node[:apache][:log_level] %>
-  ErrorLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-error.log
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-ssl-access.log combined
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-ssl-ganglia.log ganglia
+  ErrorLog <%= node[:apache][:log_dir] %>/<%= @app_name %>-error.log
+  CustomLog <%= node[:apache][:log_dir] %>/<%= @app_name %>-ssl-access.log combined
+  CustomLog <%= node[:apache][:log_dir] %>/<%= @app_name %>-ssl-ganglia.log ganglia
 
   FileETag none
 
@@ -98,10 +94,8 @@
 
   <% @environment.each do |key, value| %>
   SetEnv "<%= key %>" "<%= value %>"
-  <% end %>
-
-  <% if @params[:mounted_at] -%>
-  AliasMatch ^<%= @params[:mounted_at] %>/(.*)$ <%= @params[:docroot] %>$1
+  <% end %>  <% if @params[:mounted_at] -%>
+  AliasMatch ^<%= @params[:mounted_at] %>/(.*)$ <%= @deploy_to %>$1
   <% end -%>
 
   <% if node[:apache][:version] == '2.2' -%>

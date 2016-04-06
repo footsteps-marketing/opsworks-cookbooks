@@ -61,20 +61,14 @@ node[:deploy].each do |app_name, deploy|
 
         params = deploy.dup
 
-        Chef::Log.fatal(params[:name])
-        Chef::Log.fatal(deploy[:name])
-        Chef::Log.fatal(params[:docroot])
-        Chef::Log.fatal(deploy[:docroot])
-
-        application_name = params[:name]
-        directory "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d"
-        params[:rewrite_config] = "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d/rewrite"
-        params[:local_config] = "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d/local"
+        directory "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d"
+        params[:rewrite_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/rewrite"
+        params[:local_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/local"
         
-        if node[:deploy][application_name].nil?
+        if deploy[application_name].nil?
             environment_variables = {}
         else
-            environment_variables = node[:deploy][application_name][:environment_variables]
+            environment_variables = deploy[application_name][:environment_variables]
         end
 
         template "#{node[:apache][:dir]}/sites-available/#{mapped_domain}.conf" do
@@ -85,7 +79,8 @@ node[:deploy].each do |app_name, deploy|
             variables(
                 :application_name => (application_name rescue nil),
                 :mapped_domain => (mapped_domain rescue nil),
-                :params => (params rescue nil),
+                :app_name => (app_name rescue nil),
+                :deploy_to => ("#{deploy[:deploy_to]}/current" rescue nil),
                 :environment => (OpsWorks::Escape.escape_double_quotes(environment_variables) rescue nil)
             )
             if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf")
