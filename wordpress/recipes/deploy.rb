@@ -75,20 +75,17 @@ node[:deploy].each do |app_name, deploy|
             owner 'root'
             group 'root'
             mode 0644
-            if params[:cookbook]
-                cookbook params[:cookbook]
-            end
             environment_variables = if node[:deploy][application_name].nil?
                                         {}
                                     else
                                         node[:deploy][application_name][:environment_variables]
                                     end
-            variables(
+            variables = {
                 :application_name => application_name,
                 :mapped_domain => mapped_domain,
                 :params => params,
                 :environment => OpsWorks::Escape.escape_double_quotes(environment_variables)
-            )
+            }
             if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf")
                 notifies :reload, "service[apache2]", :delayed
             end
