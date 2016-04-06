@@ -1,8 +1,8 @@
 <VirtualHost *:80>
-  ServerName <%= @mapped_domain %>
-  DocumentRoot <%= @params[:docroot] %>
+  ServerName <%= mapped_domain %>
+  DocumentRoot <%= params[:docroot] %>
 
-  <Directory <%= @params[:docroot] %>>
+  <Directory <%= params[:docroot] %>>
     Options FollowSymLinks
     AllowOverride All
     Order allow,deny
@@ -20,40 +20,40 @@
   </Directory>
 
   LogLevel <%= node[:apache][:log_level] %>
-  ErrorLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-error.log
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-access.log combined
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-ganglia.log ganglia
+  ErrorLog <%= node[:apache][:log_dir] %>/<%= params[:name] %>-error.log
+  CustomLog <%= node[:apache][:log_dir] %>/<%= params[:name] %>-access.log combined
+  CustomLog <%= node[:apache][:log_dir] %>/<%= params[:name] %>-ganglia.log ganglia
 
   FileETag none
 
   RewriteEngine On
   <% if node[:apache][:version] == '2.2' -%>
-  Include <%= @params[:rewrite_config] %>*
+  Include <%= params[:rewrite_config] %>*
   RewriteLog <%= node[:apache][:log_dir] %>/<%= @application_name %>-rewrite.log
   RewriteLogLevel 0
   <% else -%>
-  IncludeOptional <%= @params[:rewrite_config] %>*
+  IncludeOptional <%= params[:rewrite_config] %>*
   <% end -%>
 
   <% @environment.each do |key, value| %>
   SetEnv "<%= key %>" "<%= value %>"
   <% end %>
 
-  <% if @params[:mounted_at] -%>
-  AliasMatch ^<%= @params[:mounted_at] %>/(.*)$ <%= @params[:docroot] %>$1
+  <% if params[:mounted_at] -%>
+  AliasMatch ^<%= params[:mounted_at] %>/(.*)$ <%= params[:docroot] %>$1
   <% end -%>
 
   <% if node[:apache][:version] == '2.2' -%>
-  Include <%= @params[:local_config] %>*
+  Include <%= params[:local_config] %>*
   <% else -%>
-  IncludeOptional <%= @params[:local_config] %>*
+  IncludeOptional <%= params[:local_config] %>*
   <% end -%>
 </VirtualHost>
 
 <% if node[:wordpress][:letsencrypt][:get_certificates] -%>
 <VirtualHost *:443>
   ServerName <%= @mapped_domain %>
-  DocumentRoot <%= @params[:docroot] %>
+  DocumentRoot <%= params[:docroot] %>
 
   SSLEngine on
   SSLProxyEngine on
@@ -63,7 +63,7 @@
 
   SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
 
-  <Directory <%= @params[:docroot] %>>
+  <Directory <%= params[:docroot] %>>
     Options FollowSymLinks
     AllowOverride All
     Order allow,deny
@@ -81,33 +81,33 @@
   </Directory>
 
   LogLevel <%= node[:apache][:log_level] %>
-  ErrorLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-error.log
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-ssl-access.log combined
-  CustomLog <%= node[:apache][:log_dir] %>/<%= @params[:name] %>-ssl-ganglia.log ganglia
+  ErrorLog <%= node[:apache][:log_dir] %>/<%= params[:name] %>-error.log
+  CustomLog <%= node[:apache][:log_dir] %>/<%= params[:name] %>-ssl-access.log combined
+  CustomLog <%= node[:apache][:log_dir] %>/<%= params[:name] %>-ssl-ganglia.log ganglia
 
   FileETag none
 
   RewriteEngine On
   <% if node[:apache][:version] == '2.2' -%>
-  Include <%= @params[:rewrite_config] %>-ssl*
+  Include <%= params[:rewrite_config] %>-ssl*
   RewriteLog <%= node[:apache][:log_dir] %>/<%= @application_name %>-rewrite.log
   RewriteLogLevel 0
   <% else -%>
-  IncludeOptional <%= @params[:rewrite_config] %>-ssl*
+  IncludeOptional <%= params[:rewrite_config] %>-ssl*
   <% end -%>
 
   <% @environment.each do |key, value| %>
   SetEnv "<%= key %>" "<%= value %>"
   <% end %>
 
-  <% if @params[:mounted_at] -%>
-  AliasMatch ^<%= @params[:mounted_at] %>/(.*)$ <%= @params[:docroot] %>$1
+  <% if params[:mounted_at] -%>
+  AliasMatch ^<%= params[:mounted_at] %>/(.*)$ <%= params[:docroot] %>$1
   <% end -%>
 
   <% if node[:apache][:version] == '2.2' -%>
-  Include <%= @params[:local_config] %>-ssl*
+  Include <%= params[:local_config] %>-ssl*
   <% else -%>
-  IncludeOptional <%= @params[:local_config] %>-ssl*
+  IncludeOptional <%= params[:local_config] %>-ssl*
   <% end -%>
 </VirtualHost>
 <% end -%>
