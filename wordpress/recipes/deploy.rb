@@ -50,7 +50,7 @@ node[:deploy].each do |app_name, deploy|
     end
 
     domains_to_map.each do |mapped_domain|
-        log 'domain_mapping_list'
+        log 'domain_mapping_list' do
             message "Mapping: #{mapped_domain}"
             level :info
         end
@@ -65,7 +65,7 @@ node[:deploy].each do |app_name, deploy|
             user "root"
             cwd "/opt/letsencrypt"
             code <<-EOH
-                /opt/letsencrypt/letsencrypt-auto certonly --no-self-upgrade --webroot --expand --non-interactive --keep-until-expiring --agree-tos --email "#{node[:wordpress][:letsencrypt][:admin_email]}" --webroot-path "#{deploy[:deploy_to]}/current" -d "#{mapped_domain}"
+            /opt/letsencrypt/letsencrypt-auto certonly --no-self-upgrade --webroot --expand --non-interactive --keep-until-expiring --agree-tos --email "#{node[:wordpress][:letsencrypt][:admin_email]}" --webroot-path "#{deploy[:deploy_to]}/current" -d "#{mapped_domain}"
             EOH
         end
 
@@ -74,7 +74,7 @@ node[:deploy].each do |app_name, deploy|
         directory "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d"
         params[:rewrite_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/rewrite"
         params[:local_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/local"
-        
+
         if deploy[app_name].nil?
             environment_variables = {}
         else
@@ -92,15 +92,16 @@ node[:deploy].each do |app_name, deploy|
                 :deploy_to => "#{deploy[:deploy_to]}/current/",
                 :params => params,
                 :environment => (OpsWorks::Escape.escape_double_quotes(environment_variables) rescue nil)
-            )
+                )
             if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{app_name}.conf")
                 notifies :reload, "service[apache2]", :delayed
             end
         end
+
         apache_site "#{mapped_domain}.conf" do
             enable enable_setting
         end
-        
+
     end
 
 end
