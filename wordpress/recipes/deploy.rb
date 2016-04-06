@@ -61,6 +61,9 @@ node[:deploy].each do |app_name, deploy|
 
         params = deploy.dup
 
+        Chef::Log.fatal(params[:name])
+        Chef::Log.fatal(params[:docroot])
+
         application_name = params[:name]
         directory "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d"
         params[:rewrite_config] = "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d/rewrite"
