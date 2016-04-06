@@ -61,6 +61,7 @@ node[:deploy].each do |app_name, deploy|
 
         params = deploy.dup
 
+        application_name = app_name
         directory "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d"
         params[:rewrite_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/rewrite"
         params[:local_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/local"
