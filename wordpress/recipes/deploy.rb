@@ -4,6 +4,9 @@
 exclude_plugins = node['wordpress']['exclude_plugins']
 exclude_themes = node['wordpress']['exclude_themes']
 
+app_name = nil
+deploy = nil
+
 node[:deploy].each do |app_name, deploy|
 
     exclude_plugins.each do |plugin|
