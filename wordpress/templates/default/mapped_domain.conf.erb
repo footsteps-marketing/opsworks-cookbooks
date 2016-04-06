@@ -1,5 +1,5 @@
 <VirtualHost *:80>
-  ServerName <% @mapped_domain %>
+  ServerName <%= @mapped_domain %>
   DocumentRoot <%= @params[:docroot] %>
 
   <Directory <%= @params[:docroot] %>>
@@ -52,7 +52,7 @@
 
 <% if node[:wordpress][:letsencrypt][:get_certificates] -%>
 <VirtualHost *:443>
-  ServerName <% @mapped_domain %>
+  ServerName <%= @mapped_domain %>
   DocumentRoot <%= @params[:docroot] %>
 
   SSLEngine on
