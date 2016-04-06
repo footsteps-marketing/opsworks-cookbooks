@@ -48,20 +48,16 @@ node[:deploy].each do |app_name, deploy|
 
     domains_to_map.unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
-    script "letsencrypt_doer" do
-        interpreter "bash"
-        user "root"
-        cwd "/opt/letsencrypt"
-        code <<-EOH
-            DOMAINS="-d #{node[:wordpress][:wp_config][:multisite][:domain_current_site]}"
-            for domain in $(php #{deploy[:deploy_to]}/current/get-mapped-domains.php); do
-                DOMAINS="${DOMAINS} -d ${domain}"
-            done
-            /opt/letsencrypt/letsencrypt-auto certonly --webroot --expand --non-interactive --keep-until-expiring --agree-tos --email "#{node[:wordpress][:letsencrypt][:admin_email]}" --webroot-path "#{deploy[:deploy_to]}/current" $DOMAINS
-        EOH
-    end
-
     domains_to_map.each do |mapped_domain|
+
+        script "letsencrypt_doer" do
+            interpreter "bash"
+            user "root"
+            cwd "/opt/letsencrypt"
+            code <<-EOH
+                /opt/letsencrypt/letsencrypt-auto certonly --no-self-upgrade --webroot --expand --non-interactive --keep-until-expiring --agree-tos --email "#{node[:wordpress][:letsencrypt][:admin_email]}" --webroot-path "#{deploy[:deploy_to]}/current" -d "#{mapped_domain}"
+            EOH
+        end
 
         params = deploy.dup
 
@@ -75,17 +71,17 @@ node[:deploy].each do |app_name, deploy|
             owner 'root'
             group 'root'
             mode 0644
+            variables(
+                :application_name => (application_name rescue nil),
+                :mapped_domain => (mapped_domain rescue nil),
+                :params => (params rescue nil),
+                :environment => (OpsWorks::Escape.escape_double_quotes(environment_variables) rescue nil)
+            )
             environment_variables = if node[:deploy][application_name].nil?
                                         {}
                                     else
                                         node[:deploy][application_name][:environment_variables]
                                     end
-            variables = {
-                :application_name => application_name,
-                :mapped_domain => mapped_domain,
-                :params => params,
-                :environment => OpsWorks::Escape.escape_double_quotes(environment_variables)
-            }
             if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf")
                 notifies :reload, "service[apache2]", :delayed
             end
