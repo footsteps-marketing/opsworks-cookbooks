@@ -66,16 +66,17 @@ node[:deploy].each do |app_name, deploy|
         params[:rewrite_config] = "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d/rewrite"
         params[:local_config] = "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d/local"
         
+        if node[:deploy][application_name].nil?
+            environment_variables = {}
+        else
+            environment_variables = node[:deploy][application_name][:environment_variables]
+        end
+
         template "#{node[:apache][:dir]}/sites-available/#{mapped_domain}.conf" do
             source 'mapped_domain.conf.erb'
             owner 'root'
             group 'root'
             mode 0644
-            if node[:deploy][application_name].nil?
-                environment_variables {}
-            else
-                environment_variables node[:deploy][application_name][:environment_variables]
-            end
             variables(
                 :application_name => (application_name rescue nil),
                 :mapped_domain => (mapped_domain rescue nil),
