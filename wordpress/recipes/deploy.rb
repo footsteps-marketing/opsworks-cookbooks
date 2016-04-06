@@ -63,7 +63,7 @@ node[:deploy].each do |app_name, deploy|
 
     domains_to_map.each do |mapped_domain|
 
-        params = deploy.clone
+        params = deploy.dup
 
         application_name = params[:name]
         directory "#{node[:apache][:dir]}/sites-available/#{application_name}.conf.d"
