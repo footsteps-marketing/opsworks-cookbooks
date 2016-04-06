@@ -67,8 +67,7 @@ node[:deploy].each do |app_name, deploy|
             source 'mapped_domain.conf.erb'
             owner 'root'
             group 'root'
-            mode 0644
-            variables :domain => mapped_domain
+            mode 0644            
         end
         
     end
