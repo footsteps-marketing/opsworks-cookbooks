@@ -62,17 +62,16 @@ node[:deploy].each do |app_name, deploy|
             EOH
         end
 
-        params = deploy.dup
+        params = {}
 
-        application_name = app_name
         directory "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d"
         params[:rewrite_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/rewrite"
         params[:local_config] = "#{node[:apache][:dir]}/sites-available/#{app_name}.conf.d/local"
         
-        if deploy[application_name].nil?
+        if deploy[app_name].nil?
             environment_variables = {}
         else
-            environment_variables = deploy[application_name][:environment_variables]
+            environment_variables = deploy[app_name][:environment_variables]
         end
 
         template "#{node[:apache][:dir]}/sites-available/#{mapped_domain}.conf" do
@@ -81,13 +80,13 @@ node[:deploy].each do |app_name, deploy|
             group 'root'
             mode 0644
             variables(
-                :application_name => (application_name rescue nil),
                 :mapped_domain => (mapped_domain rescue nil),
-                :app_name => (app_name rescue nil),
-                :deploy_to => ("#{deploy[:deploy_to]}/current" rescue nil),
+                :app_name => "#{app_name}",
+                :deploy_to => "#{deploy[:deploy_to]}/current/",
+                :params => params,
                 :environment => (OpsWorks::Escape.escape_double_quotes(environment_variables) rescue nil)
             )
-            if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf")
+            if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{app_name}.conf")
                 notifies :reload, "service[apache2]", :delayed
             end
         end
