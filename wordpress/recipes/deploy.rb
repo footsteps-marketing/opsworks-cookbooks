@@ -49,6 +49,13 @@ node[:deploy].each do |app_name, deploy|
         action :create
     end
 
+    domains_to_map.each do |mapped_domain|
+        log 'domain_mapping_list'
+            message "Mapping: #{mapped_domain}"
+            level :info
+        end
+    end
+
     domains_to_map.unshift("#{node[:wordpress][:wp_config][:multisite][:domain_current_site]}")
 
     domains_to_map.each do |mapped_domain|
