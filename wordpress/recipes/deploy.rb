@@ -71,17 +71,17 @@ node[:deploy].each do |app_name, deploy|
             owner 'root'
             group 'root'
             mode 0644
+            if node[:deploy][application_name].nil?
+                environment_variables {}
+            else
+                environment_variables node[:deploy][application_name][:environment_variables]
+            end
             variables(
                 :application_name => (application_name rescue nil),
                 :mapped_domain => (mapped_domain rescue nil),
                 :params => (params rescue nil),
                 :environment => (OpsWorks::Escape.escape_double_quotes(environment_variables) rescue nil)
             )
-            environment_variables = if node[:deploy][application_name].nil?
-                                        {}
-                                    else
-                                        node[:deploy][application_name][:environment_variables]
-                                    end
             if ::File.exists?("#{node[:apache][:dir]}/sites-enabled/#{application_name}.conf")
                 notifies :reload, "service[apache2]", :delayed
             end
