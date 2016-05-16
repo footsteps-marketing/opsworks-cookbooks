@@ -110,6 +110,15 @@ define('FSM_GOOGLE_PUBLIC_API_KEY', '<%= node['wordpress']['wp_config']['fsm_goo
 
 
 
+<% if node['wordpress']['wp_config']['fsm_circular_api_secret']!=false -%>
+/**
+ * FSM Circular API Secret
+ **/
+define('FSM_CIRCULAR_API_SECRET', '<%= node['wordpress']['wp_config']['fsm_circular_api_secret'] %>');
+<% end -%>
+
+
+
 <% if node['wordpress']['wp_config']['fsm_smtp_host']!=false -%>
 /**
  * FSM SMTP Settings

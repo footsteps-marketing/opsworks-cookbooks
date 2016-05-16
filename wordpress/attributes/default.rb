@@ -27,6 +27,8 @@ default['wordpress']['wp_config']['fsm_smtp']['fsm_smtp_pass'] = false
 default['wordpress']['wp_config']['fsm_smtp']['fsm_smtp_auth'] = false
 default['wordpress']['wp_config']['fsm_smtp']['fsm_smtp_secu'] = false
 
+default['wordpress']['wp_config']['fsm_circular_api_secret'] = false
+
 default['wordpress']['wp_config']['multisite']['enabled'] = false
 default['wordpress']['wp_config']['multisite']['subdomain_install'] = false
 default['wordpress']['wp_config']['multisite']['domain_current_site'] = false
