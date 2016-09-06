@@ -28,6 +28,9 @@ default['wordpress']['wp_config']['fsm_smtp']['fsm_smtp_auth'] = false
 default['wordpress']['wp_config']['fsm_smtp']['fsm_smtp_secu'] = false
 
 default['wordpress']['wp_config']['fsm_circular_api_secret'] = false
+default['wordpress']['wp_config']['fsm_circular_response_signing_key'] = false
+default['wordpress']['wp_config']['fsm_circular_processor_endpoint'] = false
+default['wordpress']['wp_config']['fsm_circular_api_key'] = false
 
 default['wordpress']['wp_config']['multisite']['enabled'] = false
 default['wordpress']['wp_config']['multisite']['subdomain_install'] = false
